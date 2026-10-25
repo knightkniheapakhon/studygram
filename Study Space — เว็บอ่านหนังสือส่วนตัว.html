@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Space — Personal Dashboard</title>
+<style>
+:root {
+  --site-primary: #8B7CFF;
+  --site-secondary: #20243A;
+  --site-background: #10111A;
+  --site-on-primary: #FFFFFF;
+  --site-on-secondary: #F0F0FA;
+  --site-on-background: #F2F2FA;
+  --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-font-heading: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--site-background); color: var(--site-on-background); font-family: var(--site-font-body); }
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+#app { min-height: 100vh; width: 100%; background-color: var(--site-background); color: var(--site-on-background); border-radius: 0; }
+.shell { max-width: 1320px; margin: 0 auto; padding: calc(28px * var(--site-spacing-scale)); }
+.topbar { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:30px; }
+.brand { display:flex; align-items:center; gap:12px; min-width:0; }
+.logo { width:44px; height:44px; border-radius:15px; display:grid; place-items:center; background:var(--site-primary); color:var(--site-on-primary); font-size:22px; box-shadow:0 8px 28px #8b7cff33; }
+.eyebrow { color:#A6A7BD; text-transform:uppercase; font-size:11px; letter-spacing:1.8px; font-weight:700; }
+h1,h2,h3,p { margin-top:0; }
+h1 { font-family:var(--site-font-heading); font-size:calc(27px * var(--site-heading-scale)); line-height:1.2; margin:3px 0 0; letter-spacing:-.7px; }
+.top-actions { display:flex; gap:9px; align-items:center; }
+.pill { border:1px solid #34364A; background:#191A27; color:#C7C8D8; border-radius:999px; padding:9px 13px; font-size:12px; white-space:nowrap; }
+.btn { border:0; border-radius:12px; padding:10px 14px; color:var(--site-on-primary); background:var(--site-primary); font-weight:700; font-size:13px; transition:transform .15s,opacity .15s; }
+.btn:hover { transform:translateY(-1px); }
+.btn.secondary { color:#D7D8E8; background:#25273A; border:1px solid #37394F; }
+.btn.ghost { color:#AEB0C5; background:transparent; border:1px solid #35374A; }
+.hero { border:1px solid #303146; border-radius:calc(25px * var(--site-radius-scale)); padding:calc(28px * var(--site-spacing-scale)); background:linear-gradient(120deg,#22213D 0%,#191A2B 53%,#171823 100%); position:relative; overflow:hidden; margin-bottom:20px; }
+.hero:after { content:""; position:absolute; width:270px; height:270px; border-radius:50%; right:-70px; top:-145px; background:var(--site-primary); opacity:calc(.12 * var(--site-decoration-opacity)); filter:blur(2px); pointer-events:none; }
+.hero-content { position:relative; z-index:1; display:flex; justify-content:space-between; align-items:center; gap:25px; }
+.hero h2 { font-size:calc(25px * var(--site-heading-scale)); margin:9px 0 8px; letter-spacing:-.5px; }
+.hero p { color:#B8B8CC; margin-bottom:19px; font-size:14px; }
+.hero-stat { display:flex; gap:20px; flex-wrap:wrap; }
+.hero-stat div { color:#B7B8CD; font-size:12px; }
+.hero-stat strong { display:block; color:#FFF; font-size:20px; margin-bottom:3px; }
+.ring { width:120px; height:120px; border-radius:50%; display:grid; place-items:center; flex:0 0 auto; background:conic-gradient(var(--site-primary) var(--progress, 0%),#3B3A55 0); position:relative; }
+.ring:before { content:""; position:absolute; inset:9px; border-radius:50%; background:#1B1B2D; }
+.ring-inner { position:relative; text-align:center; }
+.ring-inner strong { display:block; font-size:25px; }
+.ring-inner span { font-size:10px; color:#B7B8CC; }
+.grid { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr); gap:20px; align-items:start; }
+.panel { background:#171823; border:1px solid #2D2F42; border-radius:calc(21px * var(--site-radius-scale)); padding:calc(21px * var(--site-spacing-scale)); min-width:0; }
+.panel-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:17px; }
+.panel-head h3 { font-size:16px; margin:0; letter-spacing:-.2px; }
+.sub { font-size:12px; color:#8F91AA; margin-top:5px; }
+.icon-box { width:34px; height:34px; display:grid; place-items:center; border-radius:11px; background:#29273F; color:#B8AEFF; font-size:16px; }
+.task-list { display:flex; flex-direction:column; gap:9px; }
+.task { display:flex; align-items:center; gap:11px; padding:12px; border:1px solid #2B2D40; border-radius:13px; background:#1B1C29; }
+.task input[type=checkbox] { accent-color:var(--site-primary); width:17px; height:17px; flex:0 0 auto; }
+.task-copy { flex:1; min-width:0; }
+.task-copy strong { font-size:13px; display:block; font-weight:600; overflow-wrap:anywhere; }
+.task-copy small { display:block; color:#9294AC; font-size:11px; margin-top:4px; }
+.task.done .task-copy strong { text-decoration:line-through; color:#77798F; }
+.tag { color:#BDB3FF; background:#302C4D; border-radius:7px; padding:5px 7px; font-size:10px; white-space:nowrap; }
+.delete { border:0; color:#797B93; background:transparent; font-size:18px; padding:2px 5px; }
+.add-row { display:flex; gap:8px; margin-top:13px; }
+.field { width:100%; min-width:0; border:1px solid #34364B; background:#11121C; color:#F0F0FA; border-radius:11px; padding:11px 12px; outline:none; font-size:13px; }
+.field:focus { border-color:var(--site-primary); box-shadow:0 0 0 3px #8b7cff20; }
+.field::placeholder { color:#686A82; }
+select.field { width:auto; }
+.schedule { display:flex; flex-direction:column; gap:9px; }
+.study-row { display:grid; grid-template-columns:64px minmax(0,1fr) auto; gap:12px; align-items:center; padding:12px 0; border-bottom:1px solid #292B3B; }
+.study-row:last-child { border-bottom:0; }
+.time { color:#A9A0FF; font-size:11px; font-weight:700; }
+.study-main strong { font-size:13px; display:block; }
+.study-main small { color:#8F91AA; font-size:11px; display:block; margin-top:4px; }
+.study-row .check-btn { border:1px solid #3A3C52; background:#202131; color:#B9BBD0; border-radius:9px; padding:7px 9px; font-size:11px; }
+.study-row.finished .study-main strong { color:#77798F; text-decoration:line-through; }
+.goal-list { display:flex; flex-direction:column; gap:17px; }
+.goal-top { display:flex; justify-content:space-between; gap:10px; font-size:12px; margin-bottom:8px; }
+.goal-top span { color:#A0A1B7; }
+.progress { height:7px; background:#2C2D41; border-radius:99px; overflow:hidden; }
+.progress span { display:block; height:100%; border-radius:99px; background:var(--site-primary); width:0; transition:width .2s; }
+.goal-actions { display:flex; gap:7px; margin-top:9px; }
+.goal-actions button { padding:5px 8px; font-size:10px; }
+.chart-wrap { height:155px; display:flex; align-items:end; justify-content:space-around; gap:12px; padding:12px 5px 0; border-bottom:1px solid #33354A; }
+.chart-day { flex:1; height:100%; display:flex; flex-direction:column; justify-content:end; align-items:center; gap:8px; min-width:0; }
+.bar-track { width:100%; height:112px; display:flex; align-items:end; justify-content:center; }
+.bar { width:min(28px,75%); min-height:3px; border-radius:7px 7px 2px 2px; background:linear-gradient(180deg,#A59AFF,var(--site-primary)); position:relative; }
+.bar span { position:absolute; bottom:calc(100% + 5px); left:50%; transform:translateX(-50%); color:#C4C4D8; font-size:10px; }
+.chart-day small { color:#9294AA; font-size:10px; padding-bottom:9px; }
+.chart-note { font-size:11px; color:#8587A0; margin:13px 0 0; }
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
+.stat { background:#171823; border:1px solid #2D2F42; border-radius:16px; padding:15px; }
+.stat-label { color:#9698B0; font-size:11px; }
+.stat strong { display:block; font-size:22px; margin:7px 0 3px; letter-spacing:-.5px; }
+.stat small { color:#8D8FA8; font-size:10px; }
+.footer { text-align:center; color:#676980; font-size:10px; padding:23px 0 4px; }
+.modal-backdrop { position:fixed; inset:0; background:#05050bcc; display:none; align-items:center; justify-content:center; padding:18px; z-index:20; }
+.modal-backdrop.open { display:flex; }
+.modal { width:min(440px,100%); background:#1A1B29; border:1px solid #383A50; border-radius:20px; padding:23px; box-shadow:0 20px 80px #0008; }
+.modal h3 { margin-bottom:7px; }
+.modal p { color:#9698B0; font-size:12px; line-height:1.6; margin-bottom:17px; }
+.modal form { display:flex; flex-direction:column; gap:11px; }
+.modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:7px; }
+.empty { color:#777990; text-align:center; padding:20px 10px; font-size:12px; border:1px dashed #36384B; border-radius:12px; }
+@media (max-width:820px) { .grid { grid-template-columns:1fr; } .hero-content { align-items:flex-start; } .ring { width:96px; height:96px; } .ring-inner strong { font-size:21px; } }
+@media (max-width:540px) { .shell { padding:17px; } .topbar { align-items:flex-start; } .top-actions { flex-direction:column; align-items:flex-end; } .pill { display:none; } h1 { font-size:22px; } .hero { padding:20px; } .hero h2 { font-size:22px; } .hero-content { gap:10px; } .ring { width:78px; height:78px; } .ring:before { inset:7px; } .ring-inner strong { font-size:17px; } .ring-inner span { font-size:8px; } .hero-stat { gap:13px; } .hero-stat strong { font-size:17px; } .panel { padding:16px; } .stats { gap:7px; } .stat { padding:11px; } .stat strong { font-size:18px; } .stat-label { font-size:10px; } .study-row { grid-template-columns:54px minmax(0,1fr) auto; gap:8px; } .add-row { flex-wrap:wrap; } .add-row .field { flex:1 1 140px; } }
+</style>
+</head>
+<body>
+<div id="app">
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">✦</div>
+        <div>
+          <div class="eyebrow">YOUR PERSONAL SPACE</div>
+          <h1 id="pageTitle">Study Space</h1>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span class="pill" id="todayLabel">MY STUDY DASHBOARD</span>
+        <button class="btn secondary" id="editTitleBtn">✎ แก้ชื่อเว็บ</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-content">
+        <div>
+          <div class="eyebrow">A LITTLE PROGRESS EVERY DAY</div>
+          <h2 id="welcomeTitle">วันนี้มาโฟกัสกัน ✨</h2>
+          <p id="welcomeText">วางแผนให้ชัด ทำทีละอย่าง แล้วค่อย ๆ เข้าใกล้เป้าหมาย</p>
+          <div class="hero-stat">
+            <div><strong id="heroDone">0</strong>งานที่ทำเสร็จ</div>
+            <div><strong id="heroStudy">0 นาที</strong>เวลาอ่านหนังสือวันนี้</div>
+            <div><strong id="heroGoals">0/0</strong>เป้าหมายที่ถึงแล้ว</div>
+          </div>
+        </div>
+        <div class="ring" id="overallRing" style="--progress:0%"><div class="ring-inner"><strong id="overallPercent">0%</strong><span>ความคืบหน้า</span></div></div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="stat"><div class="stat-label">งานที่ต้องทำเสร็จ</div><strong id="taskStat">0 / 0</strong><small>จาก To-do list ของคุณ</small></div>
+      <div class="stat"><div class="stat-label">เวลาอ่านหนังสือสะสม</div><strong id="studyStat">0 ชม.</strong><small>จากตารางอ่านหนังสือ</small></div>
+      <div class="stat"><div class="stat-label">เป้าหมายที่กำลังทำ</div><strong id="goalStat">0</strong><small>ปรับเป้าหมายได้ตลอดเวลา</small></div>
+    </section>
+
+    <section class="grid">
+      <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
+        <section class="panel">
+          <div class="panel-head"><div><h3>✓ To-do list</h3><div class="sub">เพิ่มงาน แก้ไข และติ๊กเมื่อทำเสร็จ</div></div><div class="icon-box">☑</div></div>
+          <div class="task-list" id="taskList"></div>
+          <form class="add-row" id="taskForm"><input class="field" id="taskInput" placeholder="เพิ่มสิ่งที่ต้องทำ..." maxlength="100" required><select class="field" id="taskPriority" aria-label="ความสำคัญ"><option value="ทั่วไป">ทั่วไป</option><option value="สำคัญ">สำคัญ</option><option value="ด่วน">ด่วน</option></select><button class="btn" type="submit">＋ เพิ่ม</button></form>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><div><h3>◷ ตารางอ่านหนังสือ</h3><div class="sub">วางแผนช่วงเวลาและบันทึกเวลาที่อ่านจริง</div></div><div class="icon-box">▦</div></div>
+          <div class="schedule" id="scheduleList"></div>
+          <form class="add-row" id="studyForm"><input class="field" id="studyTime" type="time" value="18:00" aria-label="เวลาเริ่ม" required style="max-width:115px"><input class="field" id="studySubject" placeholder="วิชา / หัวข้อ" maxlength="70" required><input class="field" id="studyDuration" type="number" min="5" max="600" value="45" aria-label="นาที" style="max-width:86px"><button class="btn" type="submit">＋</button></form>
+          <div class="sub" style="margin-top:9px">ใส่เวลาอ่านเป็นนาที แล้วกด “เสร็จแล้ว” เพื่อบันทึกเวลาสะสม</div>
+        </section>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
+        <section class="panel">
+          <div class="panel-head"><div><h3>◎ เป้าหมายของฉัน</h3><div class="sub">ตั้งเป้าและอัปเดตความคืบหน้าได้เอง</div></div><div class="icon-box">↗</div></div>
+          <div class="goal-list" id="goalList"></div>
+          <form class="add-row" id="goalForm"><input class="field" id="goalInput" placeholder="เป้าหมายใหม่..." maxlength="80" required><button class="btn" type="submit">＋ เพิ่ม</button></form>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><div><h3>▥ สถิติการอ่าน</h3><div class="sub">นาทีที่บันทึกในแต่ละวัน (7 วันล่าสุด)</div></div><div class="icon-box">⌁</div></div>
+          <div class="chart-wrap" id="studyChart"></div>
+          <p class="chart-note" id="chartNote">เมื่อทำตารางอ่านเสร็จ เวลาจะปรากฏในกราฟนี้</p>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><h3>✦ พื้นที่ของฉัน</h3><div class="sub">ปรับข้อความให้เข้ากับเป้าหมายของคุณ</div></div><div class="icon-box">✎</div></div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <label class="sub" for="welcomeEdit">หัวข้อทักทาย</label><input class="field" id="welcomeEdit" maxlength="80" value="วันนี้มาโฟกัสกัน ✨">
+            <label class="sub" for="welcomeTextEdit">ข้อความสั้น ๆ</label><textarea class="field" id="welcomeTextEdit" rows="2" maxlength="180">วางแผนให้ชัด ทำทีละอย่าง แล้วค่อย ๆ เข้าใกล้เป้าหมาย</textarea>
+            <button class="btn secondary" id="saveWelcome">บันทึกข้อความ</button>
+            <button class="btn ghost" id="resetBtn">คืนค่าเริ่มต้น</button>
+          </div>
+        </section>
+      </div>
+    </section>
+    <footer class="footer">MADE FOR YOUR OWN JOURNEY · ข้อมูลถูกบันทึกในเบราว์เซอร์นี้</footer>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal"><h3 id="modalTitle">แก้ไข</h3><p id="modalDescription">เปลี่ยนข้อมูลได้ตามต้องการ</p><form id="modalForm"><div id="modalFields"></div><div class="modal-actions"><button class="btn ghost" type="button" id="modalCancel">ยกเลิก</button><button class="btn" type="submit">บันทึก</button></div></form></div>
+</div>
+<script>
+(() => {
+  const STORAGE_KEY = 'study-space-personal-v1';
+  const defaults = {
+    pageTitle: 'Study Space', welcomeTitle: 'วันนี้มาโฟกัสกัน ✨', welcomeText: 'วางแผนให้ชัด ทำทีละอย่าง แล้วค่อย ๆ เข้าใกล้เป้าหมาย',
+    tasks: [
+      {id:1,text:'ทบทวนบทเรียนที่เรียนวันนี้',priority:'สำคัญ',done:false},
+      {id:2,text:'ทำโจทย์ฝึกหัด 10 ข้อ',priority:'ทั่วไป',done:false},
+      {id:3,text:'อ่านหนังสือก่อนนอน 20 นาที',priority:'ทั่วไป',done:false}
+    ],
+    schedule: [
+      {id:11,time:'17:30',subject:'คณิตศาสตร์ · ทำโจทย์',duration:45,done:false},
+      {id:12,time:'18:30',subject:'ฟิสิกส์ · ทบทวนสูตร',duration:40,done:false},
+      {id:13,time:'20:00',subject:'ภาษาอังกฤษ · คำศัพท์',duration:25,done:false}
+    ],
+    goals: [
+      {id:21,text:'อ่านหนังสือให้ครบ 2 ชั่วโมง',current:0,target:120,unit:'นาที'},
+      {id:22,text:'ทำโจทย์ให้ได้ 20 ข้อ',current:0,target:20,unit:'ข้อ'},
+      {id:23,text:'อ่านหนังสือ 5 วันในสัปดาห์',current:0,target:5,unit:'วัน'}
+    ], history: {}
+  };
+  let data = load();
+  let modalAction = null;
+  const $ = id => document.getElementById(id);
+  const escapeHtml = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const todayKey = (date = new Date()) => `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+  function load() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return structuredClone(defaults);
+      const parsed = JSON.parse(saved);
+      return {...structuredClone(defaults), ...parsed, tasks:Array.isArray(parsed.tasks)?parsed.tasks:structuredClone(defaults.tasks), schedule:Array.isArray(parsed.schedule)?parsed.schedule:structuredClone(defaults.schedule), goals:Array.isArray(parsed.goals)?parsed.goals:structuredClone(defaults.goals), history:parsed.history||{}};
+    } catch (e) { return structuredClone(defaults); }
+  }
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+    catch (e) { console.warn('บันทึกข้อมูลไม่สำเร็จในบริบทนี้', e); }
+  }
+  function nextId() { return Date.now() + Math.floor(Math.random()*1000); }
+  function todayMinutes() { return data.history[todayKey()] || 0; }
+  function totalMinutes() { return Object.values(data.history).reduce((sum,n)=>sum+(Number(n)||0),0); }
+  function openModal(title,description,fields,onSubmit) {
+    $('modalTitle').textContent=title; $('modalDescription').textContent=description;
+    $('modalFields').innerHTML=fields;
+    modalAction=onSubmit; $('modalBackdrop').classList.add('open');
+    const first=$('modalFields').querySelector('input,textarea,select'); if(first) first.focus();
+  }
+  function closeModal() { $('modalBackdrop').classList.remove('open'); modalAction=null; }
+  function renderTasks() {
+    const list=$('taskList');
+    if (!data.tasks.length) { list.innerHTML='<div class="empty">ยังไม่มีงาน เพิ่มงานแรกของคุณได้เลย</div>'; return; }
+    list.innerHTML=data.tasks.map(task=>`<div class="task ${task.done?'done':''}"><input type="checkbox" aria-label="ทำงานเสร็จ" data-task-check="${task.id}" ${task.done?'checked':''}><div class="task-copy"><strong>${escapeHtml(task.text)}</strong><small>${task.done?'ทำเสร็จแล้ว':'ยังไม่เสร็จ'}</small></div><span class="tag">${escapeHtml(task.priority)}</span><button class="delete" title="แก้ไขงาน" aria-label="แก้ไขงาน" data-task-edit="${task.id}">✎</button><button class="delete" title="ลบงาน" aria-label="ลบงาน" data-task-delete="${task.id}">×</button></div>`).join('');
+  }
+  function renderSchedule() {
+    const list=$('scheduleList');
+    const sorted=[...data.schedule].sort((a,b)=>a.time.localeCompare(b.time));
+    if (!sorted.length) { list.innerHTML='<div class="empty">ยังไม่มีตารางอ่านหนังสือ เพิ่มวิชาและเวลาได้ด้านล่าง</div>'; return; }
+    list.innerHTML=sorted.map(item=>`<div class="study-row ${item.done?'finished':''}"><div class="time">${escapeHtml(item.time)}</div><div class="study-main"><strong>${escapeHtml(item.subject)}</strong><small>${item.duration} นาที${item.done?' · บันทึกแล้ว':''}</small></div><div style="display:flex;gap:5px;align-items:center"><button class="check-btn" data-study-done="${item.id}">${item.done?'✓ เสร็จ':'เสร็จแล้ว'}</button><button class="delete" data-study-edit="${item.id}" title="แก้ไข">✎</button><button class="delete" data-study-delete="${item.id}" title="ลบ">×</button></div></div>`).join('');
+  }
+  function renderGoals() {
+    const list=$('goalList');
+    if (!data.goals.length) { list.innerHTML='<div class="empty">ยังไม่มีเป้าหมาย ตั้งเป้าแรกของคุณได้เลย</div>'; return; }
+    list.innerHTML=data.goals.map(goal=>{const pct=Math.min(100,Math.round((goal.current/Math.max(1,goal.target))*100));return `<div class="goal"><div class="goal-top"><strong>${escapeHtml(goal.text)}</strong><span>${goal.current}/${goal.target} ${escapeHtml(goal.unit||'')}</span></div><div class="progress"><span style="width:${pct}%"></span></div><div class="goal-actions"><button class="btn secondary" data-goal-step="${goal.id}" type="button">＋ เพิ่มความคืบหน้า</button><button class="btn ghost" data-goal-edit="${goal.id}" type="button">แก้ไข</button><button class="btn ghost" data-goal-delete="${goal.id}" type="button">ลบ</button></div></div>`;}).join('');
+  }
+  function renderChart() {
+    const chart=$('studyChart'); const days=[];
+    for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const key=todayKey(d);days.push({key,label:['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'][d.getDay()],value:Number(data.history[key]||0)});}
+    const max=Math.max(60,...days.map(d=>d.value));
+    chart.innerHTML=days.map(day=>{const h=Math.max(day.value?5:2,Math.round(day.value/max*100));return `<div class="chart-day"><div class="bar-track"><div class="bar" style="height:${h}%"><span>${day.value}</span></div></div><small>${day.label}</small></div>`;}).join('');
+    $('chartNote').textContent=`7 วันล่าสุดบันทึกเวลาอ่านรวม ${days.reduce((s,d)=>s+d.value,0)} นาที`;
+  }
+  function renderStats() {
+    const done=data.tasks.filter(t=>t.done).length; const total=data.tasks.length; const goalDone=data.goals.filter(g=>g.current>=g.target).length;
+    const percent=total?Math.round(done/total*100):0; $('overallRing').style.setProperty('--progress',percent+'%'); $('overallPercent').textContent=percent+'%';
+    $('heroDone').textContent=`${done}/${total}`; $('heroStudy').textContent=`${todayMinutes()} นาที`; $('heroGoals').textContent=`${goalDone}/${data.goals.length}`;
+    $('taskStat').textContent=`${done} / ${total}`; $('studyStat').textContent=`${(totalMinutes()/60).toFixed(1)} ชม.`; $('goalStat').textContent=data.goals.filter(g=>g.current<g.target).length;
+  }
+  function render() {
+    $('pageTitle').textContent=data.pageTitle; $('welcomeTitle').textContent=data.welcomeTitle; $('welcomeText').textContent=data.welcomeText;
+    $('welcomeEdit').value=data.welcomeTitle; $('welcomeTextEdit').value=data.welcomeText;
+    const d=new Date(); $('todayLabel').textContent=d.toLocaleDateString('th-TH',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).toUpperCase();
+    renderTasks(); renderSchedule(); renderGoals(); renderChart(); renderStats(); save();
+  }
+  $('editTitleBtn').addEventListener('click',()=>openModal('แก้ชื่อหน้าเว็บ','ตั้งชื่อเว็บส่วนตัวของคุณได้ตามต้องการ',`<label class="sub" for="modalTitleInput">ชื่อหน้าเว็บ</label><input class="field" id="modalTitleInput" maxlength="50" required value="${escapeHtml(data.pageTitle)}">`,form=>{data.pageTitle=form.get('modalTitleInput').trim()||'Study Space';render();}));
+  $('taskForm').addEventListener('submit',e=>{e.preventDefault();const text=$('taskInput').value.trim();if(!text)return;data.tasks.push({id:nextId(),text,priority:$('taskPriority').value,done:false});$('taskInput').value='';render();});
+  $('taskList').addEventListener('change',e=>{const id=Number(e.target.dataset.taskCheck);if(!id)return;const task=data.tasks.find(t=>t.id===id);if(task)task.done=e.target.checked;render();});
+  $('taskList').addEventListener('click',e=>{const edit=e.target.closest('[data-task-edit]');const del=e.target.closest('[data-task-delete]');if(edit){const task=data.tasks.find(t=>t.id===Number(edit.dataset.taskEdit));if(!task)return;openModal('แก้ไขงาน','เปลี่ยนชื่องานหรือระดับความสำคัญ',`<label class="sub" for="editTaskText">ชื่องาน</label><input class="field" id="editTaskText" maxlength="100" required value="${escapeHtml(task.text)}"><label class="sub" for="editTaskPriority">ความสำคัญ</label><select class="field" id="editTaskPriority"><option ${task.priority==='ทั่วไป'?'selected':''}>ทั่วไป</option><option ${task.priority==='สำคัญ'?'selected':''}>สำคัญ</option><option ${task.priority==='ด่วน'?'selected':''}>ด่วน</option></select>`,form=>{task.text=form.get('editTaskText').trim();task.priority=form.get('editTaskPriority');render();});}if(del){const id=Number(del.dataset.taskDelete);data.tasks=data.tasks.filter(t=>t.id!==id);render();}});
+  $('studyForm').addEventListener('submit',e=>{e.preventDefault();const subject=$('studySubject').value.trim();const duration=Number($('studyDuration').value);if(!subject||duration<5)return;data.schedule.push({id:nextId(),time:$('studyTime').value,subject,duration,done:false});$('studySubject').value='';render();});
+  $('scheduleList').addEventListener('click',e=>{const done=e.target.closest('[data-study-done]');const edit=e.target.closest('[data-study-edit]');const del=e.target.closest('[data-study-delete]');if(done){const item=data.schedule.find(s=>s.id===Number(done.dataset.studyDone));if(item){item.done=!item.done;if(item.done){data.history[todayKey()]=(data.history[todayKey()]||0)+Number(item.duration);item.lastRecorded=todayKey();}else if(item.lastRecorded===todayKey()){data.history[todayKey()]=Math.max(0,(data.history[todayKey()]||0)-Number(item.duration));delete item.lastRecorded;}else {item.done=true;alert('รายการนี้ถูกบันทึกในวันก่อนแล้ว หากยกเลิกสถานะ กรุณาตรวจยอดเวลาด้วย');}}render();}if(edit){const item=data.schedule.find(s=>s.id===Number(edit.dataset.studyEdit));if(!item)return;openModal('แก้ตารางอ่านหนังสือ','แก้เวลา วิชา และระยะเวลา',`<label class="sub" for="editStudyTime">เวลา</label><input class="field" id="editStudyTime" type="time" required value="${escapeHtml(item.time)}"><label class="sub" for="editStudySubject">วิชา / หัวข้อ</label><input class="field" id="editStudySubject" maxlength="70" required value="${escapeHtml(item.subject)}"><label class="sub" for="editStudyDuration">เวลาอ่าน (นาที)</label><input class="field" id="editStudyDuration" type="number" min="5" max="600" required value="${item.duration}">`,form=>{item.time=form.get('editStudyTime');item.subject=form.get('editStudySubject').trim();item.duration=Number(form.get('editStudyDuration'));render();});}if(del){const id=Number(del.dataset.studyDelete);const item=data.schedule.find(s=>s.id===id);if(item?.done&&item.lastRecorded===todayKey())data.history[todayKey()]=Math.max(0,(data.history[todayKey()]||0)-Number(item.duration));data.schedule=data.schedule.filter(s=>s.id!==id);render();}});
+  $('goalForm').addEventListener('submit',e=>{e.preventDefault();const text=$('goalInput').value.trim();if(!text)return;data.goals.push({id:nextId(),text,current:0,target:10,unit:'ครั้ง'});$('goalInput').value='';render();});
+  $('goalList').addEventListener('click',e=>{const step=e.target.closest('[data-goal-step]');const edit=e.target.closest('[data-goal-edit]');const del=e.target.closest('[data-goal-delete]');if(step){const goal=data.goals.find(g=>g.id===Number(step.dataset.goalStep));if(goal)openModal('เพิ่มความคืบหน้า','ใส่จำนวนที่ทำเพิ่ม หรือปรับเป้าหมาย',`<label class="sub" for="goalCurrent">ทำได้แล้ว (${escapeHtml(goal.unit||'หน่วย')})</label><input class="field" id="goalCurrent" type="number" min="0" required value="${goal.current}"><label class="sub" for="goalTarget">เป้าหมายทั้งหมด</label><input class="field" id="goalTarget" type="number" min="1" required value="${goal.target}">`,form=>{goal.current=Number(form.get('goalCurrent'));goal.target=Number(form.get('goalTarget'));render();});}if(edit){const goal=data.goals.find(g=>g.id===Number(edit.dataset.goalEdit));if(!goal)return;openModal('แก้ไขเป้าหมาย','กำหนดชื่อ เป้าหมาย และหน่วยวัด',`<label class="sub" for="editGoalText">ชื่อเป้าหมาย</label><input class="field" id="editGoalText" maxlength="80" required value="${escapeHtml(goal.text)}"><label class="sub" for="editGoalCurrent">ความคืบหน้าปัจจุบัน</label><input class="field" id="editGoalCurrent" type="number" min="0" required value="${goal.current}"><label class="sub" for="editGoalTarget">เป้าหมายทั้งหมด</label><input class="field" id="editGoalTarget" type="number" min="1" required value="${goal.target}"><label class="sub" for="editGoalUnit">หน่วย เช่น ชั่วโมง / ข้อ / วัน</label><input class="field" id="editGoalUnit" maxlength="20" value="${escapeHtml(goal.unit||'ครั้ง')}">`,form=>{goal.text=form.get('editGoalText').trim();goal.current=Number(form.get('editGoalCurrent'));goal.target=Number(form.get('editGoalTarget'));goal.unit=form.get('editGoalUnit').trim();render();});}if(del){data.goals=data.goals.filter(g=>g.id!==Number(del.dataset.goalDelete));render();}});
+  $('saveWelcome').addEventListener('click',()=>{data.welcomeTitle=$('welcomeEdit').value.trim()||'วันนี้มาโฟกัสกัน ✨';data.welcomeText=$('welcomeTextEdit').value.trim();render();});
+  $('resetBtn').addEventListener('click',()=>openModal('คืนค่าเริ่มต้น','ข้อมูลที่เพิ่มไว้จะถูกแทนที่ด้วยตัวอย่างเริ่มต้น ต้องการทำต่อหรือไม่?',`<div class="sub">การกระทำนี้ลบงาน ตาราง เป้าหมาย และสถิติที่บันทึกไว้ในเว็บนี้</div>`,()=>{data=structuredClone(defaults);render();}));
+  $('modalCancel').addEventListener('click',closeModal); $('modalBackdrop').addEventListener('click',e=>{if(e.target===$('modalBackdrop'))closeModal();});
+  $('modalForm').addEventListener('submit',e=>{e.preventDefault();if(modalAction){const form={get:(name)=>{const el=document.getElementById(name);return el?el.value:null;}};modalAction(form);}closeModal();});
+  render();
+})();
+</script>
+</body>
+</html>
